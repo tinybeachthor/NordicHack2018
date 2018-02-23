@@ -1,0 +1,20 @@
+{
+  "manifest_version": 2,
+
+  "name": "PermaPic",
+  "description": "",
+  "version": "1.0",
+
+  "background": {
+    "scripts": ["background.js", "lib/processing.js", "lib/norms.js", "lib/hog.js", "lib/sha256.min.js"]
+  },
+
+  "permissions": [
+    "activeTab",
+
+    "notifications",
+    
+    "webRequest",
+    "<all_urls>"
+  ]
+}
