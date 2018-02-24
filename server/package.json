@@ -1,0 +1,16 @@
+{
+  "name": "permapic_server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {},
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.0.3",
+    "nconf": "^0.10.0",
+    "koa": "^2.4.1",
+    "koa-bodyparser": "^4.2.0",
+    "@koa/cors": "2"
+  }
+}
