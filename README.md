@@ -4,7 +4,9 @@
 
 ## Problem
 
-identity theft (fake social media accounts), unauthorised sharing of private images, copyright infridgement
+- identity theft (fake social media accounts)
+- unauthorised sharing of private images
+- copyright infridgement
 
 ## Scenario
 
