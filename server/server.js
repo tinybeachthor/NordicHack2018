@@ -30,6 +30,14 @@ app.use(async ctx => {
 	const hash = ctx.request.body.hash || null;
 	const url  = ctx.request.body.url || null;
 
+	if(!hash || !url) {
+		console.log('bad request', ctx.request.body);
+		ctx.status = 400; //bad request
+		return;
+	}
+	else
+		ctx.status = 200;
+
 	let result = await gdb.collection("image_hashes").findOne({hash: hash});
 	if(!result) {
 		console.log('new image', hash);
@@ -61,13 +69,14 @@ app.use(async ctx => {
 			});
 		}
 	}
-
-	ctx.status = 200;
 });
 
 // Read in keys and secrets. Using nconf use can set secrets via
 // environment variables, command-line arguments, or a keys.json file.
-nconf.argv().env().file('keys.json');
+nconf
+	.argv()
+  .env()
+  .file({ file: './keys.json' });
 
 // Connect to a MongoDB server provisioned over at
 // MongoLab.  See the README for more info.
@@ -81,7 +90,6 @@ let uri = `mongodb://${user}:${pass}@${host}:${port}`;
 if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
 }
-console.log(uri);
 
 //global db connection
 var gdb = null;
@@ -97,8 +105,6 @@ mongodb.MongoClient.connect(uri, (err, db) => {
 	console.log('database connected', nconf.get('mongoDatabase'));
 
 	// Start the server
-	app.listen(process.env.PORT || 8080);
+	app.listen(8080);
 	console.log('Starting server, listening on port 8080...');
-});
-
-
+}	);

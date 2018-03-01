@@ -1,11 +1,7 @@
 {
-  "name": "permapic_server",
+  "name": "privit_server",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
-  "scripts": {},
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "mongodb": "^3.0.3",
     "nconf": "^0.10.0",
