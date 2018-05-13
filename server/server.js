@@ -1,5 +1,3 @@
-'use strict';
-
 const mongodb = require('mongodb');
 const nconf = require('nconf');
 
@@ -16,7 +14,8 @@ app.use(bodyParser());
 app.use(async (ctx, next) => {
   try {
     await next();
-  } catch (err) {
+  }
+  catch (err) {
     console.log(err);
 
     ctx.status = err.status || 500;
@@ -27,60 +26,59 @@ app.use(async (ctx, next) => {
 
 // handle requests
 app.use(async ctx => {
-	const hash = ctx.request.body.hash || null;
-	const url  = ctx.request.body.url || null;
+  const hash = ctx.request.body.hash || null;
+  const url  = ctx.request.body.url || null;
 
-	if(!hash || !url) {
-		console.log('bad request', ctx.request.body);
-		ctx.status = 400; //bad request
-		return;
-	}
-	else
-		ctx.status = 200;
+  if(!hash || !url) {
+    console.log('bad request', ctx.request.body);
+    ctx.status = 400; //bad request
+    return;
+  }
+  else
+    ctx.status = 200;
 
-	let result = await gdb.collection("image_hashes").findOne({hash: hash});
-	if(!result) {
-		console.log('new image', hash);
-		ctx.body = JSON.stringify({
-			validURL: true
-		});
-		//insert into db
-		gdb.collection("image_hashes").insertOne(
-			{
-				hash: hash,
-				url: url
-			},
-			function(err, res) {
-				if (err) throw err;
-				console.log("image added", hash);
-			}
-		);
-	}
-	else {
-		console.log('image exists', hash);
-		if(result.url === url) {
-			ctx.body = JSON.stringify({
-				validURL: true
-			});
-		}
-		else {
-			ctx.body = JSON.stringify({
-				validURL: false
-			});
-		}
-	}
+  let result = await gdb.collection("image_hashes").findOne({hash: hash});
+  if(!result) {
+    console.log('new image', hash);
+    ctx.body = JSON.stringify({
+      validURL: true
+    });
+    //insert into db
+    gdb.collection("image_hashes").insertOne(
+      {
+        hash: hash,
+        url: url
+      },
+      function(err, res) {
+        if (err)
+          throw err;
+        console.log("image added", hash);
+      }
+    );
+  }
+  else {
+    console.log('image exists', hash);
+    if(result.url === url) {
+      ctx.body = JSON.stringify({
+        validURL: true
+      });
+    }
+    else {
+      ctx.body = JSON.stringify({
+        validURL: false
+      });
+    }
+  }
 });
 
 // Read in keys and secrets. Using nconf use can set secrets via
 // environment variables, command-line arguments, or a keys.json file.
 nconf
-	.argv()
+  .argv()
   .env()
   .file({ file: './keys.json' });
 
-// Connect to a MongoDB server provisioned over at
-// MongoLab.  See the README for more info.
-
+// Connect to a MongoDB server provisioned over at MongoLab.
 const user = nconf.get('mongoUser');
 const pass = nconf.get('mongoPass');
 const host = nconf.get('mongoHost');
@@ -100,11 +98,11 @@ mongodb.MongoClient.connect(uri, (err, db) => {
     throw err;
   }
 
-	// Log database connect
-	gdb = db.db(nconf.get('mongoDatabase'));
-	console.log('database connected', nconf.get('mongoDatabase'));
+  // Log database connect
+  gdb = db.db(nconf.get('mongoDatabase'));
+  console.log('database connected', nconf.get('mongoDatabase'));
 
-	// Start the server
-	app.listen(8080);
-	console.log('Starting server, listening on port 8080...');
-}	);
+  // Start the server
+  app.listen(8080);
+  console.log('Starting server, listening on port 8080...');
+});

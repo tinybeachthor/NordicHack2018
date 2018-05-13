@@ -7,7 +7,7 @@ const options = {
   blockStride: 1, // number of cells to slide block window by (block overlap)
   bins: 6,        // bins per histogram
   norm: 'L2'      // block normalization method
-}
+};
 
 chrome.webRequest.onCompleted.addListener(
   function(info) {
@@ -54,11 +54,11 @@ function showWasBlocked(url) {
 	  title: "Stolen image detected!",
 	  message: url,
 	  iconUrl: "icon.png"
-	}
+	};
  	chrome.notifications.create(options);
 }
 
-const serverAddress = "https://permapic-196223.appspot.com";
+const serverAddress = "https://www.tekwrks.com/privit/app";
 function sendHashToServer(hash, url) {
 	return fetch(serverAddress, {
 	  method: 'POST',
