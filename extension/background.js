@@ -12,33 +12,33 @@ const options = {
 chrome.webRequest.onCompleted.addListener(
   function(info) {
     var img = new Image();
-		img.onload = function() {
-			//resize canvas to the new image
-			canvas.width  = img.width;
-			canvas.height = img.height;
+    img.onload = function() {
+      //resize canvas to the new image
+      canvas.width  = img.width;
+      canvas.height = img.height;
 
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-				ctx.drawImage(img, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0);
 
-			let descriptor = hog.extractHOG(canvas, options);
+      let descriptor = hog.extractHOG(canvas, options);
 
-			let descStr = 0;
-			for (let i = descriptor.length - 1; i >= 0; i--) {
-				descStr += descriptor[i];
-			}
+      let descStr = 0;
+      for (let i = descriptor.length - 1; i >= 0; i--) {
+        descStr += descriptor[i];
+      }
 
-			const hash = sha256(descStr.toString());
+      const hash = sha256(descStr.toString());
 
-			console.log("Descriptor: ", hash);
+      console.log("Descriptor: ", hash);
 
-			sendHashToServer(hash, info.url)
-				.then(isValid => {
-					if(!isValid) {
-						showWasBlocked(info.url);
-					}
-				});
-		};
-		img.src = info.url;
+      sendHashToServer(hash, info.url)
+      .then(isValid => {
+        if(!isValid) {
+          showWasBlocked(info.url);
+          }
+        });
+      };
+    img.src = info.url;
   },
   // filters
   {
@@ -48,28 +48,28 @@ chrome.webRequest.onCompleted.addListener(
 );
 
 function showWasBlocked(url) {
-	//send local notification
- 	var options = {
-	  type: "basic",
-	  title: "Stolen image detected!",
-	  message: url,
-	  iconUrl: "icon.png"
-	};
- 	chrome.notifications.create(options);
+  //send local notification
+  var options = {
+    type: "basic",
+    title: "Stolen image detected!",
+    message: url,
+    iconUrl: "icon.png"
+    };
+  chrome.notifications.create(options);
 }
 
-const serverAddress = "https://www.tekwrks.com/privit/app";
+const serverAddress = "<SERVER_ADDRESS>";
 function sendHashToServer(hash, url) {
-	return fetch(serverAddress, {
-	  method: 'POST',
-	  headers: {
-	    'Content-Type': 'application/json'
-	  },
-	  body: JSON.stringify({
-	    hash: hash,
-	    url: url
-	  })
-	})
-	.then(response => response.json())
-	.then(json => json.validURL);
+  return fetch(serverAddress, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+      },
+    body: JSON.stringify({
+      hash: hash,
+      url: url
+    })
+  })
+  .then(response => response.json())
+  .then(json => json.validURL);
 }

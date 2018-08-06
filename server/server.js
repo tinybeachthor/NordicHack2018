@@ -5,6 +5,19 @@ const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const cors = require('@koa/cors');
 
+// Read in keys and secrets. Using nconf use can set secrets via
+// environment variables, command-line arguments, or a keys.json file.
+nconf
+  .argv()
+  .env()
+  .file({ file: './keys.json' });
+
+// Connect to a MongoDB server provisioned over at MongoLab.
+const user = nconf.get('mongoUser');
+const pass = nconf.get('mongoPass');
+const host = nconf.get('mongoHost');
+const port = nconf.get('mongoPort');
+
 // Init the server
 const app = new Koa();
 app.use(cors());
@@ -22,7 +35,7 @@ app.use(async (ctx, next) => {
     ctx.body = err.message;
     ctx.app.emit('error', err, ctx);
   }
-})
+});
 
 // handle requests
 app.use(async ctx => {
@@ -71,26 +84,14 @@ app.use(async ctx => {
   }
 });
 
-// Read in keys and secrets. Using nconf use can set secrets via
-// environment variables, command-line arguments, or a keys.json file.
-nconf
-  .argv()
-  .env()
-  .file({ file: './keys.json' });
+//global db connection
+var gdb = null;
 
-// Connect to a MongoDB server provisioned over at MongoLab.
-const user = nconf.get('mongoUser');
-const pass = nconf.get('mongoPass');
-const host = nconf.get('mongoHost');
-const port = nconf.get('mongoPort');
-
+// database uri
 let uri = `mongodb://${user}:${pass}@${host}:${port}`;
 if (nconf.get('mongoDatabase')) {
   uri = `${uri}/${nconf.get('mongoDatabase')}`;
 }
-
-//global db connection
-var gdb = null;
 
 // connect to db, then run server
 mongodb.MongoClient.connect(uri, (err, db) => {

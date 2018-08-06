@@ -6,17 +6,24 @@
   "version": "1.0",
 
   "background": {
-    "scripts": ["background.js", "lib/processing.js", "lib/norms.js", "lib/hog.js", "lib/sha256.min.js", "lib/fetch.js"]
+    "scripts": [
+      "background.js",
+      "lib/processing.js",
+      "lib/norms.js",
+      "lib/hog.js",
+      "lib/sha256.min.js",
+      "lib/fetch.js"
+    ]
   },
 
   "permissions": [
     "activeTab",
 
     "notifications",
-    
+
     "webRequest",
     "<all_urls>",
 
-    "https://permapic-196223.appspot.com/*"
+    "<SERVER_ADDRESS>"
   ]
 }
